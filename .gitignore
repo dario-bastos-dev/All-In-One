@@ -1,3 +1,16 @@
-node_modules
-.env
+
+# Node modules
+node_modules/
+
+# Package-lock
 package-lock.json
+
+# Environment variables
+.env
+
+# Prisma generated files
+prisma/generated/
+prisma/client/
+
+# Prisma migrations (optional, based on team/project needs)
+prisma/migrations/
