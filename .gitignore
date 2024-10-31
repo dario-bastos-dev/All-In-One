@@ -14,3 +14,6 @@ prisma/client/
 
 # Prisma migrations (optional, based on team/project needs)
 prisma/migrations/
+
+# Testes
+test/
