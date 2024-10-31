@@ -1,21 +1,22 @@
-import express from "express"
-const app = express()
+import express from "express";
+const app = express();
 import path from "path";
-
-// Database
-
+import routerUser from "./src/routes/RouterUser";
 
 // Iniciando servidor
-const port = process.env.PORT || 8080
-app.listen(port, ()=> {
-          console.log("Servidor on-line!")
-})
+const port = 8080;
+app.listen(port, () => {
+  console.log("Servidor on-line!");
+});
 
 // Static
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 
 // Body-Parser
-app.use(express.urlencoded({extended: true}))
-app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middlewars
+app.use(routerUser);
+
+export default app;

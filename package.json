@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "tsx watch --env-file .env server.ts",
-    "start": "nodemon server.js",
+    "start": "nodemon --env-file .env server.js",
+    "test": "vitest run",
     "build": "npx tsc"
   },
   "keywords": [],
@@ -13,6 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.8.1",
+    "@types/supertest": "^6.0.2",
     "prisma": "^5.21.1",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3"
@@ -30,6 +32,8 @@
     "express-session": "^1.18.1",
     "helmet": "^8.0.0",
     "nodemon": "^3.1.7",
-    "validator": "^13.12.0"
+    "supertest": "^7.0.0",
+    "validator": "^13.12.0",
+    "vitest": "^2.1.4"
   }
 }
