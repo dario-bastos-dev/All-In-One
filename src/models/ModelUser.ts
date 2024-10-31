@@ -1,6 +1,7 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import {
   InterfaceUser,
+  InterfaceUserAll,
   InterfaceUserBody,
 } from "../@types/interfaces/interfaces";
 import validator from "validator";
@@ -11,9 +12,9 @@ const prisma = new PrismaClient();
 export default class User {
   private _user: InterfaceUser | null;
   private _error: Array<string>;
-  private _body: InterfaceUserBody;
+  private _body: InterfaceUserAll;
 
-  constructor(body: InterfaceUserBody) {
+  constructor(body: InterfaceUserAll) {
     this._user = null;
     this._error = [];
     this._body = body;
@@ -26,17 +27,18 @@ export default class User {
   public get error(): Array<string> | null {
     return this._error;
   }
-  public get body(): InterfaceUserBody | null {
+  public get body(): InterfaceUserAll | null {
     return this._body;
   }
 
   // Funções para modificar o banco de dados
+  // -Registar usuário no banco de dados
   public async register(): Promise<void> {
     try {
       this.validation();
 
       if (this._error.length === 0) {
-        const { name, email, password } = this._body;
+        const { name, email, password } = this._body as InterfaceUserBody ;
         const salt = bcryptjs.genSaltSync(10);
         const hash = bcryptjs.hashSync(password, salt);
 
@@ -58,33 +60,47 @@ export default class User {
             break;
 
           default:
-            this._error.push("Ocorreu um erro ao cadastrar o usuário");
+            this._error.push("Ocorreu um erro ao cadastrar o usuário.");
             console.error(
-              "Ocorreu um erro ao cadastrar o usuário",
+              "Ocorreu um erro ao cadastrar o usuário.",
               error.message
             );
         }
       }
     }
   }
-
+  // -Deletar usuário
   public async delete(id: number): Promise<void> {
     try {
       this._user = await prisma.user.delete({ where: { id: id } });
     } catch (error) {
-      console.error("Ocorreu o erro: ", error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case "P2021":
+            this._error.push("Conexão perdida com o banco de dados.");
+            console.error("Conexão perdida com o banco de dados.");
+            break;
+
+          default:
+            this._error.push("Ocorreu um erro ao deletar o usuário.");
+            console.error(
+              "Ocorreu um erro ao deletar o usuário.",
+              error.message
+            );
+        }
+      }
     }
   }
-
+  // -Fazer login no sisitema
   public async login(): Promise<void> {
     try {
       this._user = await prisma.user.findUnique({
         where: { email: this._body.email },
       });
 
-      if (!this._user) this._error.push("Usuário não existe!");
+      if (this._user === null) this._error.push("Usuário não existe!");
       else {
-        if (!bcryptjs.compareSync(this._body.password, this._user.password))
+        if (bcryptjs.compareSync(this._body.password, this._user.password) === false)
           this._error.push("Senha incorreta!");
       }
     } catch (error) {
@@ -96,9 +112,9 @@ export default class User {
             break;
 
           default:
-            this._error.push("Ocorreu um erro ao cadastrar o usuário");
+            this._error.push("Ocorreu um erro ao realizar o login.");
             console.error(
-              "Ocorreu um erro ao deletar o usuário",
+              "Ocorreu um erro ao realizar o login.",
               error.message
             );
         }
@@ -109,7 +125,7 @@ export default class User {
   // Funções para validação de dados e tratamento de erros
   private validation(): void {
     try {
-      const body = this._body;
+      const body = this._body as InterfaceUserBody;
 
       if (validator.isEmpty(body.email)) this._error.push("E-mail inválido!");
       if (validator.isEmpty(body.password)) this._error.push("Senha inválida!");

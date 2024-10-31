@@ -9,3 +9,19 @@ export interface InterfaceUserBody extends InterfaceUserlogin {
 export interface InterfaceUser extends InterfaceUserBody {
   id: number;
 }
+
+export type InterfaceUserAll =
+  | InterfaceUserlogin
+  | InterfaceUserBody
+  | InterfaceUser;
+
+export type UserResponse = {
+  status: string;
+  message?: string;
+  error?: string[];
+  data?: {
+    id: number;
+    name: string;
+    email: string;
+  };
+};

@@ -1,33 +1,34 @@
 import { Request, Response } from "express";
 import ServiceUser from "../services/ServiceUser";
 
+// Lógica para o caminho da rota
 export default class ControllerUser {
-  static async registerUser(req: Request, res: Response) {
-    //res.send(req.body)
+  // -Lógica de registro de usuário
+  static async registerUser(req: Request, res: Response): Promise<void> {
     const result = await ServiceUser.createUser(req.body);
 
     if (result != undefined) {
-      const { user, error } = result;
-
-      if (error.length > 0) {
-        res.status(400).json({
-          status: "error",
-          message: error,
-        });
-      } else {
-        res.status(201).json({
-          status: "success",
-          data: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          },
-        });
+      if (result != undefined) {
+        if (result.status === "success") res.status(201).json(result);
+        else res.status(409).json(result);
       }
     } else
       res.status(500).json({
         status: "error",
         message: "Ocorreu um erro ao criar o usuário",
+      });
+  }
+
+  static async login(req: Request, res: Response): Promise<void> {
+    const result = await ServiceUser.login(req.body);
+    
+    if (result != undefined) {
+      if (result.status === "success") res.status(200).json(result);
+      else res.status(403).json(result);
+    } else
+      res.status(500).json({
+        status: "error",
+        message: "Ocorreu um erro ao realizar o login.",
       });
   }
 }
