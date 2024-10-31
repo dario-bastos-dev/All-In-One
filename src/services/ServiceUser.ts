@@ -40,7 +40,7 @@ export default abstract class ServiceUser {
       console.error("Ocorreu um erro: ", error);
     }
   }
-
+  // -Lógica para login do usuário
   static async login(
     body: InterfaceUserlogin
   ): Promise<UserResponse | undefined> {

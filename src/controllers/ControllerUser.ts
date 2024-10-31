@@ -18,10 +18,10 @@ export default class ControllerUser {
         message: "Ocorreu um erro ao criar o usuário",
       });
   }
-
+  // -Lógica de login do usuário
   static async login(req: Request, res: Response): Promise<void> {
     const result = await ServiceUser.login(req.body);
-    
+
     if (result != undefined) {
       if (result.status === "success") res.status(200).json(result);
       else res.status(403).json(result);

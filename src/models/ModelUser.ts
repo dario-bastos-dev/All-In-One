@@ -38,7 +38,7 @@ export default class User {
       this.validation();
 
       if (this._error.length === 0) {
-        const { name, email, password } = this._body as InterfaceUserBody ;
+        const { name, email, password } = this._body as InterfaceUserBody;
         const salt = bcryptjs.genSaltSync(10);
         const hash = bcryptjs.hashSync(password, salt);
 
@@ -100,7 +100,10 @@ export default class User {
 
       if (this._user === null) this._error.push("Usuário não existe!");
       else {
-        if (bcryptjs.compareSync(this._body.password, this._user.password) === false)
+        if (
+          bcryptjs.compareSync(this._body.password, this._user.password) ===
+          false
+        )
           this._error.push("Senha incorreta!");
       }
     } catch (error) {
