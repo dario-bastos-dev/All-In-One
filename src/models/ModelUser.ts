@@ -27,10 +27,6 @@ export default class User {
   public get error(): Array<string> | null {
     return this._error;
   }
-  public get body(): InterfaceUserAll | null {
-    return this._body;
-  }
-
   // Funções para modificar o banco de dados
   // -Registar usuário no banco de dados
   public async register(): Promise<void> {
