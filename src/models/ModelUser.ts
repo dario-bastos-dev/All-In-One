@@ -72,17 +72,41 @@ export default class User {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         switch (error.code) {
-          case "P2021":
-            this._error.push("Conexão perdida com o banco de dados.");
-            console.error("Conexão perdida com o banco de dados.");
-            break;
-
-          default:
-            this._error.push("Ocorreu um erro ao deletar o usuário.");
-            console.error(
-              "Ocorreu um erro ao deletar o usuário.",
-              error.message
+          case "P2001":
+            this._error.push(
+              "Erro: Registro não encontrado. O ID especificado não existe."
             );
+            console.error(
+              "Erro: Registro não encontrado. O ID especificado não existe."
+            );
+            break;
+          case "P2003":
+            this._error.push(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            console.error(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            break;
+          case "P2014":
+            this._error.push(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            console.error(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            break;
+          case "P2021":
+            this._error.push("Erro: Conexão perdida com o banco de dados.");
+            console.error("Erro: Conexão perdida com o banco de dados.");
+            break;
+          case "P2022":
+            this._error.push("Erro: Falha na execução do comando SQL.");
+            console.error("Erro: Falha na execução do comando SQL.");
+            break;
+          default:
+            this._error.push("Erro conhecido do Prisma:", error.message);
+            console.error("Erro conhecido do Prisma:", error.message);
         }
       }
     }
