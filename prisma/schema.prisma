@@ -29,10 +29,11 @@ model Ticket {
   title       String
   description String
   slug        String
+  status      String
   sectorId    Int
   sector      Sector @relation(fields: [sectorId], references: [id])
   urgency     String
-  userId      Int    
+  userId      Int
   user        User   @relation(fields: [userId], references: [id])
 
   @@map("tickets")

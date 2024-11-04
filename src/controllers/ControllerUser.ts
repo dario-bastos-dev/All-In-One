@@ -8,10 +8,9 @@ export default class ControllerUser {
     const result = await ServiceUser.createUser(req.body);
 
     if (result != undefined) {
-      if (result != undefined) {
-        if (result.status === "success") res.status(201).json(result);
-        else res.status(409).json(result);
-      }
+      if (result.status === "success") res.status(201).json(result);
+      else res.status(409).json(result);
+      
     } else
       res.status(500).json({
         status: "error",

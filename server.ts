@@ -2,6 +2,7 @@ import express from "express";
 const app = express();
 import path from "path";
 import routerUser from "./src/routes/RouterUser";
+import routerTicket from "./src/routes/RouterTicket";
 
 // Iniciando servidor
 const port = 8080;
@@ -18,5 +19,6 @@ app.use(express.json());
 
 // Middlewars
 app.use(routerUser);
+app.use(routerTicket);
 
 export default app;
