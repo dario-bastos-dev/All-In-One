@@ -30,4 +30,18 @@ export default class ControllerUser {
         message: "Ocorreu um erro ao realizar o login.",
       });
   }
+
+  // -Lógica buscar o usuário
+  static async getUser(req: Request, res: Response): Promise<void> {
+    const result = await ServiceUser.getUser(req.params.id);
+
+    if (result != undefined) {
+      if (result.status === "success") res.status(200).json(result);
+      else res.status(403).json(result);
+    } else
+      res.status(500).json({
+        status: "error",
+        message: "Ocorreu um erro ao buscar o usuário.",
+      });
+  }
 }

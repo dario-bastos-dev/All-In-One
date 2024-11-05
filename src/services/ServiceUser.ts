@@ -17,15 +17,14 @@ export default abstract class ServiceUser {
 
       let response: UserResponse;
 
-      if (user.user == null) {
-        if (user.error != null && user.error.length > 0) {
-          response = {
-            status: "error",
-            error: user.error,
-          };
-          return response;
-        }
-      } else {
+      if (user.error != null && user.error.length > 0) {
+        response = {
+          status: "error",
+          error: user.error,
+        };
+        return response;
+        
+      } else if (user.user != null) {
         response = {
           status: "success",
           data: {
@@ -40,6 +39,37 @@ export default abstract class ServiceUser {
       console.error("Ocorreu um erro: ", error);
     }
   }
+  // -Lógica para buscar o usuário
+  static async getUser(id: string) {
+    try {
+      const userId = parseInt(id);
+      const user = new User(undefined);
+      await user.getUser(userId);
+
+      let response: UserResponse;
+
+      if (user.error != null && user.error.length > 0) {
+        response = {
+          status: "error",
+          error: user.error,
+        };
+
+        return response;
+      } else if (user.user != null) {
+        response = {
+          status: "success",
+          data: {
+            id: user.user.id,
+            name: user.user.name,
+            email: user.user.email,
+          },
+        };
+
+        return response;
+      }
+    } catch (error) {}
+  }
+
   // -Lógica para login do usuário
   static async login(
     body: InterfaceUserlogin
@@ -50,30 +80,20 @@ export default abstract class ServiceUser {
 
       let response: UserResponse;
 
-      if (user.user != null) {
-        if (user.error == null || user.error.length <= 0) {
-          response = {
-            status: "success",
-            message: "Autorized",
-          };
+      if (user.error != null && user.error.length > 0) {
+        response = {
+          status: "error",
+          error: user.error,
+        };
 
-          return response;
-        } else {
-          response = {
-            status: "error",
-            error: user.error,
-          };
-          return response;
-        }
-      } else {
-        if (user.error != null && user.error.length > 0) {
-          response = {
-            status: "error",
-            error: user.error,
-          };
+        return response;
+      } else if (user.user != null) {
+        response = {
+          status: "success",
+          message: "Autorized",
+        };
 
-          return response;
-        }
+        return response;
       }
     } catch (error) {}
   }

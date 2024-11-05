@@ -12,9 +12,9 @@ const prisma = new PrismaClient();
 export default class User {
   private _user: InterfaceUser | null;
   private _error: Array<string>;
-  private _body: InterfaceUserAll;
+  private _body: InterfaceUserAll | undefined;
 
-  constructor(body: InterfaceUserAll) {
+  constructor(body: InterfaceUserAll | undefined) {
     this._user = null;
     this._error = [];
     this._body = body;
@@ -65,6 +65,53 @@ export default class User {
       }
     }
   }
+  // -Buscar usuário
+  public async getUser(id: number): Promise<void> {
+    try {
+      this._user = await prisma.user.findUnique({ where: { id } });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case "P2001":
+            this._error.push(
+              "Erro: Registro não encontrado. O ID especificado não existe."
+            );
+            console.error(
+              "Erro: Registro não encontrado. O ID especificado não existe."
+            );
+            break;
+          case "P2003":
+            this._error.push(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            console.error(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            break;
+          case "P2014":
+            this._error.push(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            console.error(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            break;
+          case "P2021":
+            this._error.push("Erro: Conexão perdida com o banco de dados.");
+            console.error("Erro: Conexão perdida com o banco de dados.");
+            break;
+          case "P2022":
+            this._error.push("Erro: Falha na execução do comando SQL.");
+            console.error("Erro: Falha na execução do comando SQL.");
+            break;
+          default:
+            this._error.push("Erro conhecido do Prisma:", error.message);
+            console.error("Erro conhecido do Prisma:", error.message);
+        }
+      }
+    }
+  }
+
   // -Deletar usuário
   public async delete(id: number): Promise<void> {
     try {
@@ -114,17 +161,19 @@ export default class User {
   // -Fazer login no sisitema
   public async login(): Promise<void> {
     try {
-      this._user = await prisma.user.findUnique({
-        where: { email: this._body.email },
-      });
+      if (this._body != undefined) {
+        this._user = await prisma.user.findUnique({
+          where: { email: this._body.email },
+        });
 
-      if (this._user === null) this._error.push("Usuário não existe!");
-      else {
-        if (
-          bcryptjs.compareSync(this._body.password, this._user.password) ===
-          false
-        )
-          this._error.push("Senha incorreta!");
+        if (this._user === null) this._error.push("Usuário não existe!");
+        else {
+          if (
+            bcryptjs.compareSync(this._body.password, this._user.password) ===
+            false
+          )
+            this._error.push("Senha incorreta!");
+        }
       }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

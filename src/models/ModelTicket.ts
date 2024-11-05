@@ -93,7 +93,7 @@ export default class Ticket {
     try {
       const allTickets = await prisma.ticket.findMany({
         orderBy: {
-          id: "asc",
+          createdAt: "asc",
         },
       });
 

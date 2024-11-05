@@ -15,34 +15,40 @@ generator client {
 
 // Modelos de tabelas
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  email    String   @unique
-  password String
-  tickets  Ticket[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("users")
 }
 
 model Ticket {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   slug        String
   status      String
   sectorId    Int
-  sector      Sector @relation(fields: [sectorId], references: [id])
+  sector      Sector   @relation(fields: [sectorId], references: [id])
   urgency     String
   userId      Int
-  user        User   @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("tickets")
 }
 
 model Sector {
-  id     Int      @id @default(autoincrement())
-  name   String
-  ticket Ticket[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  ticket    Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("sectors")
 }
