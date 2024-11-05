@@ -22,7 +22,11 @@ app.use(express.json());
 
 // Middlewars
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+  })
+);
 app.use(sessionUsage);
 app.use(routerUser);
 app.use(routerTicket);
