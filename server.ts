@@ -4,6 +4,7 @@ import path from "path";
 import routerUser from "./src/routes/RouterUser";
 import routerTicket from "./src/routes/RouterTicket";
 import sessionUsage from "./src/middlewares/session";
+import helmet from "helmet";
 
 // Iniciando servidor
 const port = 8080;
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Middlewars
+app.use(helmet());
 app.use(sessionUsage);
 app.use(routerUser);
 app.use(routerTicket);
