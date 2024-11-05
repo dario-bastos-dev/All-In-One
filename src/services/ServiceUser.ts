@@ -23,7 +23,6 @@ export default abstract class ServiceUser {
           error: user.error,
         };
         return response;
-        
       } else if (user.user != null) {
         response = {
           status: "success",
@@ -90,7 +89,12 @@ export default abstract class ServiceUser {
       } else if (user.user != null) {
         response = {
           status: "success",
-          message: "Autorized",
+          message: "autorized",
+          data: {
+            id: user.user.id,
+            name: user.user.name,
+            email: user.user.email,
+          },
         };
 
         return response;

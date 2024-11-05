@@ -10,6 +10,12 @@ export interface InterfaceUser extends InterfaceUserBody {
   id: number;
 }
 
+export interface InterfaceSession {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export type InterfaceUserAll =
   | InterfaceUserlogin
   | InterfaceUserBody

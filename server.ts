@@ -3,6 +3,7 @@ const app = express();
 import path from "path";
 import routerUser from "./src/routes/RouterUser";
 import routerTicket from "./src/routes/RouterTicket";
+import sessionUsage from "./src/middlewares/session";
 
 // Iniciando servidor
 const port = 8080;
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Middlewars
+app.use(sessionUsage);
 app.use(routerUser);
 app.use(routerTicket);
 
