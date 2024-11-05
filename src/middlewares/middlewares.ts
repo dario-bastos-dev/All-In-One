@@ -7,11 +7,6 @@ class Middlewares {
     else next();
   }
 
-  public static cabecalhos(req: Request, res: Response, next: NextFunction) {
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Accept", "application/json");
-    next();
-  }
 }
 
 export default Middlewares;
