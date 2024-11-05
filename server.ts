@@ -5,6 +5,7 @@ import routerUser from "./src/routes/RouterUser";
 import routerTicket from "./src/routes/RouterTicket";
 import sessionUsage from "./src/middlewares/session";
 import helmet from "helmet";
+import Middlewares from "./src/middlewares/middlewares";
 
 // Iniciando servidor
 const port = 8080;
@@ -21,6 +22,7 @@ app.use(express.json());
 
 // Middlewars
 app.use(helmet());
+app.use(Middlewares.cabecalhos);
 app.use(sessionUsage);
 app.use(routerUser);
 app.use(routerTicket);
