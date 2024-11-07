@@ -3,9 +3,8 @@ const app = express();
 import path from "path";
 import routerUser from "./src/routes/RouterUser";
 import routerTicket from "./src/routes/RouterTicket";
-import sessionUsage from "./src/middlewares/session";
 import helmet from "helmet";
-import cors from "cors";
+import corsConfig from "./src/config/corsConfig";
 
 // Iniciando servidor
 const port = 8080;
@@ -22,14 +21,7 @@ app.use(express.json());
 
 // Middlewars
 app.use(helmet());
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5500",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-app.use(sessionUsage);
+app.use(corsConfig);
 app.use(routerUser);
 app.use(routerTicket);
 
