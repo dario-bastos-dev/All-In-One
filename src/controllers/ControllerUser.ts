@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import ServiceUser from "../services/ServiceUser";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 const key = process.env.SECRET_KEY;
 
