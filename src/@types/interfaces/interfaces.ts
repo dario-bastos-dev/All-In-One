@@ -25,6 +25,7 @@ export type UserResponse = {
   status: string;
   message?: string;
   error?: string[];
+  token?: string;
   data?: {
     id: number;
     name: string;

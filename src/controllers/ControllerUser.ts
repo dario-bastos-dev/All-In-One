@@ -31,8 +31,7 @@ export default class ControllerUser {
           const token = jwt.sign({ id: result.data.id }, key, {
             expiresIn: "7d",
           });
-
-          res.status(200).json({ result, token });
+          res.status(200).json({ token, ...result });
         }
       } else res.status(403).json(result);
     } else
