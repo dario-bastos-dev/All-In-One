@@ -54,4 +54,26 @@ export default class ControllerUser {
         message: "Ocorreu um erro ao buscar o usuário.",
       });
   }
+  // Lógica para verificar se o usuário está logado
+  public static loginVerify(req: Request, res: Response) {
+    const token = req.headers["authorization"];
+
+    if (token == undefined)
+      res.status(401).json({ status: "error", message: "Usuário não logado." });
+    else {
+      try {
+        if (key != undefined) {
+          jwt.verify(token, key);
+          res
+            .status(200)
+            .json({ status: "succes", message: "Usuário logado." });
+        }
+      } catch (error) {
+        console.log("Ocorreu um erro ao autenticar o token: ", error);
+        res
+          .status(401)
+          .json({ status: "error", message: "Usuário não logado." });
+      }
+    }
+  }
 }
