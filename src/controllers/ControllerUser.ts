@@ -66,7 +66,7 @@ export default class ControllerUser {
           jwt.verify(token, key);
           res
             .status(200)
-            .json({ status: "succes", message: "Usuário logado." });
+            .json({ status: "success", message: "Usuário logado." });
         }
       } catch (error) {
         console.log("Ocorreu um erro ao autenticar o token: ", error);
