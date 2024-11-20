@@ -1,11 +1,11 @@
-import { describe } from "node:test";
+import { log } from "console";
 import {
   InterfaceTicketBody,
   InterfaceTicketNewBody,
   InterfaceTicketUpdate,
   ResponseTicket,
 } from "../@types/interfaces/InterfaceTickets";
-import Ticket from "../models/ModelTicket";
+import Ticket from '../models/ModelTicket';
 
 // Lógica da rota de chamados
 export default abstract class ServiceTicket {
@@ -43,9 +43,9 @@ export default abstract class ServiceTicket {
             title: ticket.ticket.title,
             description: ticket.ticket.description,
             status: ticket.ticket.status,
-            sectorId: ticket.ticket.sectorId,
+            sector: ticket.ticket.sectorId,
             urgency: ticket.ticket.urgency,
-            userId: ticket.ticket.userId,
+            user: ticket.ticket.userId,
             slug: ticket.ticket.slug,
           },
         };
@@ -86,31 +86,35 @@ export default abstract class ServiceTicket {
     slug: string
   ): Promise<ResponseTicket | undefined> {
     try {
-      const ticket = new Ticket(undefined);
-      await ticket.getTicket(slug);
+      const getTicket = new Ticket(undefined);
+      const ticket = await getTicket.getTicket(slug);
 
       let response: ResponseTicket;
 
-      console.log(ticket.ticket);
+      console.log(ticket);
 
-      if (ticket.error != null && ticket.error.length > 0) {
+      if (getTicket.error != null && getTicket.error.length > 0) {
         response = {
           status: "error",
-          error: ticket.error,
+          error: getTicket.error,
         };
         return response;
-      } else if (ticket.ticket != null) {
+      } else if (ticket != null) {
+
+        console.log(ticket.sector);
+        
         response = {
           status: "success",
           data: {
-            id: ticket.ticket.id,
-            title: ticket.ticket.title,
-            description: ticket.ticket.description,
-            status: ticket.ticket.status,
-            sectorId: ticket.ticket.sectorId,
-            urgency: ticket.ticket.urgency,
-            userId: ticket.ticket.userId,
-            slug: ticket.ticket.slug,
+            id: ticket.id,
+            title: ticket.title,
+            description: ticket.description,
+            status: ticket.status,
+            sector: ticket.sector.name,
+            urgency: ticket.urgency,
+            user: ticket.user.name,
+            slug: ticket.slug,
+            created: ticket.createdAt
           },
         };
         return response;

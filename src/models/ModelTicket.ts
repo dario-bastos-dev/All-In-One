@@ -1,8 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
-import validator, { isNumeric } from "validator";
+import validator from "validator";
 import {
   InterfaceTicket,
   InterfaceTicketBody,
+  InterfaceTicketInformations,
   InterfaceTicketsAll,
   InterfaceTicketUpdate,
 } from "../@types/interfaces/InterfaceTickets";
@@ -11,7 +12,7 @@ import slugify from "slugify";
 const prisma = new PrismaClient();
 
 export default class Ticket {
-  private _ticket: InterfaceTicket | null;
+  private _ticket: InterfaceTicket | InterfaceTicketInformations | null;
   private _error: Array<string>;
   private _body: InterfaceTicketBody | undefined;
 
@@ -129,11 +130,14 @@ export default class Ticket {
   }
 
   // -Ler um chamado específico
-  public async getTicket(slug: string): Promise<void> {
+  public async getTicket(slug: string): Promise<InterfaceTicketInformations | undefined> {
     try {
-      this._ticket = await prisma.ticket.findFirst({
+      const ticket = await prisma.ticket.findFirst({
         where: { slug },
+        include: { sector: true, user: true },
       });
+
+      return ticket;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         switch (error.code) {

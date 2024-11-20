@@ -36,10 +36,11 @@ export interface ResponseTicket {
         title: string;
         description: string;
         status: string;
-        sectorId: number;
+        sector: number | string;
         urgency: string;
-        userId: number;
+        user: number | string;
         slug: string;
+        created?: Date;
       }
     | InterfaceTicketsAll;
 }
@@ -54,3 +55,25 @@ export type InterfaceTicketsAll = {
   id: number;
   slug: string;
 }[];
+
+export type InterfaceTicketInformations = ({
+  sector: {
+      name: string;
+      id: number;
+  };
+  user: {
+      name: string;
+      id: number;
+      email: string;
+  };
+} & {
+  title: string;
+  description: string;
+  status: string;
+  sectorId: number;
+  urgency: string;
+  userId: number;
+  id: number;
+  slug: string;
+  createdAt: Date;
+}) | null;
