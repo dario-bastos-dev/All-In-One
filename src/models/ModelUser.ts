@@ -39,7 +39,7 @@ export default class User {
         const hash = bcryptjs.hashSync(password, salt);
 
         this._user = await prisma.user.create({
-          data: { name, email, password: hash },
+          data: { name, email, password: hash, sectorId: 1, permission: "admin" },
         });
       }
     } catch (error) {
