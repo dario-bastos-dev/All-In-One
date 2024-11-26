@@ -7,7 +7,7 @@ dotenv.config();
 const key = process.env.SECRET_KEY;
 
 // Lógica para o caminho da rota
-export default class ControllerUser {
+export default abstract class ControllerUser {
   // -Lógica de registro de usuário
   static async registerUser(req: Request, res: Response): Promise<void> {
     const result = await ServiceUser.createUser(req.body);
@@ -41,9 +41,22 @@ export default class ControllerUser {
       });
   }
 
-  // -Lógica buscar o usuário
+  // -Lógica buscar um usuário
   static async getUser(req: Request, res: Response): Promise<void> {
     const result = await ServiceUser.getUser(req.params.id);
+
+    if (result != undefined) {
+      if (result.status === "success") res.status(200).json(result);
+      else res.status(403).json(result);
+    } else
+      res.status(500).json({
+        status: "error",
+        message: "Ocorreu um erro ao buscar o usuário.",
+      });
+  }
+  // -Lógica buscar todos os usuários
+  static async getAllUser(req: Request, res: Response): Promise<void> {
+    const result = await ServiceUser.getAllUser();
 
     if (result != undefined) {
       if (result.status === "success") res.status(200).json(result);
@@ -75,5 +88,19 @@ export default class ControllerUser {
           .json({ status: "error", message: "Usuário não logado." });
       }
     }
+  }
+
+  // -Lógica para atualizar o usuário
+  static async updateUser(req: Request, res: Response): Promise<void> {
+    const result = await ServiceUser.updateUser(req.params.id, req.body);
+
+    if (result != undefined) {
+      if (result.status === "success") res.status(200).json(result);
+      else res.status(403).json(result);
+    } else
+      res.status(500).json({
+        status: "error",
+        message: "Ocorreu um erro ao atualizar o usuário.",
+      });
   }
 }

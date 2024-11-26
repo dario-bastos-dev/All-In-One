@@ -20,8 +20,8 @@ model User {
   email      String   @unique
   password   String
   permission String
-  sectorId   Int
-  sector     Sector   @relation(fields: [sectorId], references: [id])
+  sectorId   Int?
+  sector     Sector?   @relation(fields: [sectorId], references: [id])
   tickets    Ticket[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

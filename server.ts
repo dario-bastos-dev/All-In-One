@@ -5,6 +5,7 @@ import routerUser from "./src/routes/RouterUser";
 import routerTicket from "./src/routes/RouterTicket";
 import helmet from "helmet";
 import corsConfig from "./src/config/corsConfig";
+import routerSector from "./src/routes/RouterSector";
 
 // Iniciando servidor
 const port = 8080;
@@ -24,5 +25,6 @@ app.use(helmet());
 app.use(corsConfig);
 app.use(routerUser);
 app.use(routerTicket);
+app.use(routerSector);
 
 export default app;

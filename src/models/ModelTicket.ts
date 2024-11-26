@@ -90,12 +90,13 @@ export default class Ticket {
     }
   }
   // -Ler todos os chamados
-  public async getAllTickets(): Promise<InterfaceTicketsAll | undefined> {
+  public async getAllTickets(): Promise<InterfaceTicketInformations[] | undefined> {
     try {
       const allTickets = await prisma.ticket.findMany({
         orderBy: {
           createdAt: "asc",
         },
+        include: {sector: true, user: true},
       });
 
       return allTickets;

@@ -1,8 +1,10 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import {
+  InterfaceAllUser,
   InterfaceUser,
   InterfaceUserAll,
   InterfaceUserBody,
+  InterfaceUserUpdate,
 } from "../@types/interfaces/interfaces";
 import validator from "validator";
 import bcryptjs from "bcryptjs";
@@ -39,7 +41,12 @@ export default class User {
         const hash = bcryptjs.hashSync(password, salt);
 
         this._user = await prisma.user.create({
-          data: { name, email, password: hash, sectorId: 1, permission: "admin" },
+          data: {
+            name,
+            email,
+            password: hash,
+            permission: "admin",
+          },
         });
       }
     } catch (error) {
@@ -68,7 +75,10 @@ export default class User {
   // -Buscar usuário
   public async getUser(id: number): Promise<void> {
     try {
-      this._user = await prisma.user.findUnique({ where: { id } });
+      this._user = await prisma.user.findUnique({
+        where: { id },
+        include: { sector: true, tickets: true },
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         switch (error.code) {
@@ -108,6 +118,110 @@ export default class User {
             this._error.push("Erro conhecido do Prisma:", error.message);
             console.error("Erro conhecido do Prisma:", error.message);
         }
+      }
+    }
+  }
+
+  // -Buscar todos os usuários
+  public async getAllUser(): Promise<InterfaceAllUser | undefined> {
+    try {
+      const allUser = await prisma.user.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { sector: true },
+      });
+
+      return allUser;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case "P2001":
+            this._error.push(
+              "Erro: Registro não encontrado. O ID especificado não existe."
+            );
+            console.error(
+              "Erro: Registro não encontrado. O ID especificado não existe."
+            );
+            break;
+          case "P2003":
+            this._error.push(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            console.error(
+              "Erro: Violação de chave estrangeira. O registro está sendo referenciado por outra tabela."
+            );
+            break;
+          case "P2014":
+            this._error.push(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            console.error(
+              "Erro: Violação de relação. O registro ainda tem dependências."
+            );
+            break;
+          case "P2021":
+            this._error.push("Erro: Conexão perdida com o banco de dados.");
+            console.error("Erro: Conexão perdida com o banco de dados.");
+            break;
+          case "P2022":
+            this._error.push("Erro: Falha na execução do comando SQL.");
+            console.error("Erro: Falha na execução do comando SQL.");
+            break;
+          default:
+            this._error.push("Erro conhecido do Prisma:", error.message);
+            console.error("Erro conhecido do Prisma:", error.message);
+        }
+      }
+    }
+  }
+
+  // -Atualizar usuário
+  public async updateUser(
+    id: number,
+    body: InterfaceUserUpdate
+  ): Promise<void> {
+    try {
+      if (body.password != undefined) {
+        const salt = bcryptjs.genSaltSync(10);
+        body.password = bcryptjs.hashSync(body.password, salt);
+        this._user = await prisma.user.update({
+          where: { id },
+          data: body,
+        });
+      } else
+        this._user = await prisma.user.update({
+          where: { id },
+          data: body,
+        });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case "P2001":
+            this._error.push(
+              "Registro não encontrado. O ID especificado não existe."
+            );
+            console.error(
+              "Registro não encontrado. O ID especificado não existe."
+            );
+            break;
+          case "P2003":
+            this._error.push("Violação de chave estrangeira.");
+            console.error("Violação de chave estrangeira.");
+            break;
+          case "P2004":
+            this._error.push(
+              "Violação de restrição de tipo. Verifique os tipos dos campos na consulta."
+            );
+            console.error(
+              "Violação de restrição de tipo. Verifique os tipos dos campos na consulta."
+            );
+            break;
+          default:
+            this._error.push("Erro conhecido do Prisma:", error.message);
+            console.error("Erro conhecido do Prisma:", error.message);
+        }
+      } else {
+        this._error.push("Ocorreu um erro ao atualizar o chamado.");
+        console.error("Ocorreu um erro ao atualizar o chamado");
       }
     }
   }
